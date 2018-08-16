@@ -1,0 +1,34 @@
+<?php
+
+namespace Sacprd\SeoBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="rewrite_urls")
+ */
+class Rewrite
+{
+	/**
+	* @ORM\Id
+	* @ORM\Column(type="integer")
+	* @ORM\GeneratedValue(strategy="AUTO")
+	*/
+	protected $id;
+    
+	/**
+    * @ORM\column(type="integer", nullable=false, options={"unsigned":true, "default":0})
+	*/    
+    protected $site_id;
+    
+	/**
+	* @ORM\column(type="string", length=200)
+	*/
+	protected $url;
+    
+	/**
+	* @ORM\column(type="string", length=200)
+	*/
+	protected $route;
+}

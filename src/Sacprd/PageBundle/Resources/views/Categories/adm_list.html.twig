@@ -1,0 +1,47 @@
+{% extends '@SacprdAdmin/Layout/layout.html.twig' %}
+{% block h1 %}Категории страниц{% endblock %}
+{% block content %}
+            <div style="margin-bottom: 15px">
+                <a href="{{ path('sacprd_page_edit') }}"><button type="button" class="btn btn-primary" >Создать категорию</button></a>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Название</th>
+											<th>Ссылка</th>
+											<th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+										{% for category in categories %}
+                                        <tr>
+                                            <td>{{ category.title }}</td>
+											<td>{{ category.url }}</td>
+											<td class="col-lg-2">
+                                                <a href="{{ path('sacprd_page_edit', {id: category.id}) }}"><button type="button" class="btn btn-success btn-circle"><i class="fa fa-edit"></i></button></a>
+                                                <a href="{{ path('sacprd_page_delete', {id: category.id}) }}" onClick="return confirm('Действительно удалить?');"><button type="button" class="btn btn-danger btn-circle"><i class="fa fa-trash-o"></i></button></a>
+                                            </td>
+                                        </tr>
+										{% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+
+
+        </div>
+        <!-- /#page-wrapper -->
+{% endblock %}
+

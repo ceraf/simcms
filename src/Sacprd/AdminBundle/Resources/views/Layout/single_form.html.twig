@@ -1,0 +1,44 @@
+{% block form_row %}
+    {% spaceless %}
+        <div class="form-group {% if not form.vars.valid %}has-error{% endif %}">
+        {{ form_label(form) }}
+        {{ form_widget(form, { 'attr': {'class': 'form-control'}}) }}
+		{{ form_errors(form) }}
+        </div>
+    {% endspaceless %}
+{% endblock form_row %}
+
+{% block textarea_widget %}
+	{% spaceless %}
+    <textarea {{ block('widget_attributes') }} >{% if value is not empty %}{{ value }}{% endif %}</textarea>
+    {% if attr.ckeditor|default('') is not empty %}
+        <script>
+           CKEDITOR.replace( '{{ full_name }}' );
+        </script>
+    {% endif %}
+	{% endspaceless %}
+{% endblock textarea_widget %}
+
+{% block preview_widget %}
+	{% spaceless %}
+	<div class="preview_field">
+		<a href="javascript:void(0)"><img style="width: 50%" src="/admin/{% if value %}{{attr.path}}{{ value }}{% else %}images/no-preview-big.jpg{% endif %}" /></a>
+        <input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" >
+		<input  type="file" style="display: none" name="{{ name }}" >
+	</div>
+	{% endspaceless %}
+{% endblock preview_widget %}
+
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            {% for error in errors %}
+				<label class="control-label" for="inputError">{{ error.message }}</label>
+            {% endfor %}
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}
+
+
+
+
