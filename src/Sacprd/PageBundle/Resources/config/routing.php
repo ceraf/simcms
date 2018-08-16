@@ -9,7 +9,7 @@ $collection->add('sacprd_page_list', new Route('/admin/pages', array(
     '_controller' => 'SacprdPageBundle:Adminpages:list',
 )));
 
-$collection->add('sacprd_page_edit', new Route('/admin/page/{id}', array(
+$collection->add('sacprd_page_edit', new Route('/admin/page/edit/{id}', array(
     '_controller' => 'SacprdPageBundle:Adminpages:edit',
 	'id' => 0
 )));

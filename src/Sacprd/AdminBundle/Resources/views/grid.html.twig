@@ -13,19 +13,22 @@
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Название</th>
-											<th>Ссылка</th>
-											<th></th>
+                                            {% for field in fields %}
+                                                <th>{{ field['label'] }}</th>
+                                            {% endfor %}
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-										{% for category in categories %}
+										{% for item in rows %}
                                         <tr>
-                                            <td>{{ category.title }}</td>
-											<td>{{ category.url }}</td>
+                                            {% for field in fields %}
+                                                <td>{{ attribute(item, field['name']) }}</td>
+                                            {% endfor %}                                        
 											<td class="col-lg-2">
-                                                <a href="{{ path('sacprd_page_edit', {id: category.id}) }}"><button type="button" class="btn btn-success btn-circle"><i class="fa fa-edit"></i></button></a>
-                                                <a href="{{ path('sacprd_page_delete', {id: category.id}) }}" onClick="return confirm('Действительно удалить?');"><button type="button" class="btn btn-danger btn-circle"><i class="fa fa-trash-o"></i></button></a>
+                                                {% for action in actions %}
+                                                    <a href="{{ path(action['route'], {id: attribute(item, action['field_id'])}) }}" onClick="{{ action['onclick'] }}" ><button type="button" class="btn {{ action['btntype'] }} btn-circle"><i class="{{ action['icon'] }}"></i></button></a>
+                                                {% endfor %}
                                             </td>
                                         </tr>
 										{% endfor %}
