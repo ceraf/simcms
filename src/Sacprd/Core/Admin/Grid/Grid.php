@@ -10,6 +10,8 @@ abstract class Grid
     protected $collection;
     protected $fields;
     protected $actions;
+    protected $buttons;
+    protected $route;
 
     public function __construct ()
     {
@@ -46,37 +48,45 @@ abstract class Grid
             [
                 'rows' => $this->getCollection(),
                 'fields' => $this->fields,
-                'actions' => $this->actions
+                'actions' => $this->actions,
+                'buttons' => $this->buttons
             ]);
     }
-	
+
     protected function init()
     {
-        $this->actions = [
-            'edit' => [
+        $this->actions['edit'] = [
                 'title' => 'Редактировать',
-                'route' => 'sacprd_page_edit',
+                'route' => $this->route,
+                'action' => 'edit',
                 'field_id' => 'id',
                 'icon' => 'fa fa-edit',
                 'btntype' => 'btn-success',
                 'onclick' => ''
-            ],
-            'delete' => [
-                'title' => 'Редактировать',
-                'route' => 'sacprd_page_edit',
+        ];
+        $this->actions['delete'] = [
+                'title' => 'Удалить',
+                'route' => $this->route,
+                'action' => 'delete',
                 'field_id' => 'id',
                 'icon' => 'fa fa-trash-o',
                 'btntype' => 'btn-danger',
                 'onclick' => "return confirm('Действительно удалить?');"
-            ],
+        ];
+        
+        $this->buttons['add'] = [
+            'title' => 'Добавить',
+            'route' => $this->route,
+            'action' => 'edit',
+            'btnstyle' => 'btn btn-primary'
         ];
     }
 
     protected function fetch()
     {
         $this->collection = $this->doctrine
-                                ->getRepository($this->entityname)
-                                ->findBy(array());
+                            ->getRepository($this->entityname)
+                            ->findBy(array());
         return $this;
     }
 }

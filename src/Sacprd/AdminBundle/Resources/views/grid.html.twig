@@ -2,7 +2,9 @@
 {% block h1 %}Категории страниц{% endblock %}
 {% block content %}
             <div style="margin-bottom: 15px">
-                <a href="{{ path('sacprd_page_edit') }}"><button type="button" class="btn btn-primary" >Создать категорию</button></a>
+                {% for btn in buttons %}
+                    <a title="{{ btn['title'] }}" href="{{ path(btn['route'], {action: btn['action']}) }}"><button type="button" class="{{ btn['btnstyle'] }}" >Создать категорию</button></a>
+                {% endfor %}
             </div>
             <!-- /.row -->
             <div class="row">
@@ -27,7 +29,7 @@
                                             {% endfor %}                                        
 											<td class="col-lg-2">
                                                 {% for action in actions %}
-                                                    <a href="{{ path(action['route'], {id: attribute(item, action['field_id'])}) }}" onClick="{{ action['onclick'] }}" ><button type="button" class="btn {{ action['btntype'] }} btn-circle"><i class="{{ action['icon'] }}"></i></button></a>
+                                                    <a title="{{ action['title'] }}" href="{{ path(action['route'], {id: attribute(item, action['field_id']), action: action['action']}) }}" onClick="{{ action['onclick'] }}" ><button type="button" class="btn {{ action['btntype'] }} btn-circle"><i class="{{ action['icon'] }}"></i></button></a>
                                                 {% endfor %}
                                             </td>
                                         </tr>

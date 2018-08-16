@@ -8,8 +8,10 @@ class CategoryGrid extends Grid
 {
     protected function init()
     {
-        parent::init();
+        $this->route = 'sacprd_page_action';
         
+        parent::init();
+
         $this->entityname = 'Sacprd\PageBundle\Entity\Category';
         
         $this->fields = [

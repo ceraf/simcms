@@ -23,6 +23,12 @@ class AdminpagesController extends AdminController
 		return $this->getGrid(new CategoryGrid());				
     }
 	
+    public function rowactAction($id, $action, Request $request)
+    {
+        $method = $action . 'Action';
+        return $this->$method($id, $request);
+    }
+    
 	public function deleteAction($id)
     {
         if ($id) {
