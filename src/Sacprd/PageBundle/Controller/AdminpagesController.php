@@ -18,9 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AdminpagesController extends AdminController
 {
-    public function listAction()
+    public function listAction(Request $request)
     {
-		return $this->getGrid(new CategoryGrid());				
+		return $this->getGrid(new CategoryGrid($request));				
     }
 	
     public function rowactAction($id, $action, Request $request)
@@ -72,6 +72,9 @@ class AdminpagesController extends AdminController
 		} else {
 			$category = new Category();
         }
+        
+        $title = ($id) ? 'Редактировать категорию' : 'Создать категорию';
+        $homeroute = 'sacprd_page_list';
         
         $form = $this->createForm(CategoryForm::class, $category);
 
@@ -126,34 +129,42 @@ class AdminpagesController extends AdminController
 
 				
                 $em = $this->getDoctrine()->getEntityManager();
-                $em->persist($form->getData());
-                $em->flush();
-                
-                if ($category->isHasSeoUrl()) {
-                	if ($id) {
-                        $seourl = $this->getDoctrine()
-                                ->getRepository('Sacprd\SeoBundle\Entity\Rewrite')
-                                ->findOneBy(array('route' => $form->getData()->getSeoUrlKey()));
-                        if (empty($seourl))
+                $em->getConnection()->beginTransaction();
+                try {
+                    $em->persist($form->getData());
+                    $em->flush();
+                    
+                    if ($category->isHasSeoUrl()) {
+                        if ($id) {
+                            $seourl = $this->getDoctrine()
+                                    ->getRepository('Sacprd\SeoBundle\Entity\Rewrite')
+                                    ->findOneBy(array('route' => $form->getData()->getSeoUrlKey()));
+                            if (empty($seourl))
+                                $seourl = new Rewrite();
+                        } else 
                             $seourl = new Rewrite();
-                    } else 
-                        $seourl = new Rewrite();
 
-                    $seourl->setUrl($form->getData()->getUrl());
-                    $seourl->setSiteId($form->getData()->getSiteId());
-                    $seourl->setRoute($form->getData()->getSeoUrlKey());
-                    $em->persist($seourl);
-                    $em->flush();                    
+                        $seourl->setUrl($form->getData()->getUrl());
+                        $seourl->setSiteId($form->getData()->getSiteId());
+                        $seourl->setRoute($form->getData()->getSeoUrlKey());
+                        $em->persist($seourl);
+                        $em->flush();                    
+                    }
+                    
+                    $em->getConnection()->commit();
+                    $this->get('session')->getFlashBag()->add('notice', 'Категория сохранена.');
+                } catch (Exception $e) {
+                    $em->getConnection()->rollback();
+                    throw $e;
                 }
-
-				$this->get('session')->getFlashBag()->add('notice', 'Категория сохранена.');
-                return $this->redirect($this->generateUrl('sacprd_page_list'));
+                return $this->redirect($this->generateUrl($homeroute));
             }
         }
         
         return $this->render('@SacprdPage/Categories/adm_edit.html.twig', array(
             'form' => $form->createView(),
-            'id' => $id
+            'title' => $title,
+            'home_route' => $homeroute
         ));
         
         /*

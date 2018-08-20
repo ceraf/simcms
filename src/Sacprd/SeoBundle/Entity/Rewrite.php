@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="rewrite_urls")
+ * @ORM\Table(name="seo")
  */
 class Rewrite
 {
@@ -32,6 +32,31 @@ class Rewrite
 	*/
 	protected $route;
 
+	/**
+	* @ORM\column(type="string", length=255)
+	*/
+	protected $meta_title;
+	
+	/**
+	* @ORM\column(type="string", length=255)
+	*/
+	protected $meta_h1;
+    
+    /**
+	* @ORM\column(type="string", length=500)
+	*/
+	protected $meta_description;
+    
+    /**
+	* @ORM\column(type="string", length=500)
+	*/
+	protected $meta_keyboard;  
+	
+	/**
+     * @ORM\OneToMany(targetEntity="Sacprd\PageBundle\Entity\Category", mappedBy="seo")
+     */
+    protected $category;
+    
     /**
      * Get id
      *
@@ -112,5 +137,125 @@ class Rewrite
     public function getRoute()
     {
         return $this->route;
+    }
+
+    /**
+     * Set metaTitle
+     *
+     * @param string $metaTitle
+     *
+     * @return Rewrite
+     */
+    public function setMetaTitle($metaTitle)
+    {
+        $this->meta_title = $metaTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get metaTitle
+     *
+     * @return string
+     */
+    public function getMetaTitle()
+    {
+        return $this->meta_title;
+    }
+
+    /**
+     * Set metaH1
+     *
+     * @param string $metaH1
+     *
+     * @return Rewrite
+     */
+    public function setMetaH1($metaH1)
+    {
+        $this->meta_h1 = $metaH1;
+
+        return $this;
+    }
+
+    /**
+     * Get metaH1
+     *
+     * @return string
+     */
+    public function getMetaH1()
+    {
+        return $this->meta_h1;
+    }
+
+    /**
+     * Set metaDescription
+     *
+     * @param string $metaDescription
+     *
+     * @return Rewrite
+     */
+    public function setMetaDescription($metaDescription)
+    {
+        $this->meta_description = $metaDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get metaDescription
+     *
+     * @return string
+     */
+    public function getMetaDescription()
+    {
+        return $this->meta_description;
+    }
+
+    /**
+     * Set metaKeyboard
+     *
+     * @param string $metaKeyboard
+     *
+     * @return Rewrite
+     */
+    public function setMetaKeyboard($metaKeyboard)
+    {
+        $this->meta_keyboard = $metaKeyboard;
+
+        return $this;
+    }
+
+    /**
+     * Get metaKeyboard
+     *
+     * @return string
+     */
+    public function getMetaKeyboard()
+    {
+        return $this->meta_keyboard;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Sacprd\PageBundle\Entity\Category $category
+     *
+     * @return Rewrite
+     */
+    public function setCategory(\Sacprd\PageBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Sacprd\PageBundle\Entity\Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 }

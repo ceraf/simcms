@@ -20,7 +20,7 @@
 		<form action="{{ path('login_check') }}" method="post">
         
 		<input type='text' onFocus="if(this.value=='Логин')this.value=''" onblur="if(this.value=='')this.value='Логин'" name='_username' value='{{ last_username }}' class='text_input' />
-		<input type='text' onFocus="if(this.value=='Пароль')this.value=''" onblur="if(this.value=='')this.value='Пароль'" name='_password' value='Пароль' class='text_input' />
+		<input type='password' onFocus="if(this.value=='Пароль')this.value=''" onblur="if(this.value=='')this.value='Пароль'" name='_password' value='Пароль' class='text_input' />
 		<input type='submit' value='' id='login' name='login' />
 		</form>
 	</div>

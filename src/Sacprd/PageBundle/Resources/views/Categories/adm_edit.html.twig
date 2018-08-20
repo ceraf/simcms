@@ -1,27 +1,19 @@
 {% extends '@SacprdAdmin/Layout/layout.html.twig' %}
-{% block h1 %}{% if (id) %}Редактировать категорию{% else %}Создать категорию{% endif %}{% endblock %}
+{% block h1 %}{{ title }}{% endblock %}
 {% block content %}
             {% form_theme form '@SacprdAdmin/Layout/single_form.html.twig' %}
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data" >
             {{ form_errors(form) }}
                 <div class="row">
-                    <div class="col-lg-6">
-                        {{ form_row(form.title) }}
-						{{ form_row(form.preview) }}
-                        {{ form_row(form.description) }}
-                    </div>
-                    <div class="col-lg-6">
-                        {{ form_row(form.url) }}
-                        {{ form_row(form.meta_title) }}
-                        {{ form_row(form.meta_description) }}
-                        {{ form_row(form.meta_keyboard) }}
-                    </div>
+                   
+{{ form_widget(form) }}
+                   
                 </div>
                 <p>
-                    <button type="button" onClick="document.location='{{ path('sacprd_page_list') }}'" class="btn btn-default">К списку категорий</button>
+                    <button type="button" onClick="document.location='{{ path(home_route) }}'" class="btn btn-default">Отмена</button>
                     <button type="submit" class="btn btn-success">Сохранить</button>
                 </p>
-                {{ form_rest(form) }}
+
             </form>
 {% endblock %}
 

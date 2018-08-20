@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Sacprd\Core\BaseDBModel;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Sacprd\PageBundle\Entity\Repository\CategoryRepository")
  * @ORM\Table(name="page_category")
  */
 class Category implements BaseDBModel
@@ -59,6 +59,12 @@ class Category implements BaseDBModel
 	protected $description;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Sacprd\SeoBundle\Entity\Rewrite", inversedBy="category", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="seo_id", referencedColumnName="id")
+     */
+	protected $seo;    
+    
+    /**
      * Get id
      *
      * @return integer 
@@ -91,6 +97,11 @@ class Category implements BaseDBModel
         return $this->description;
     }
 
+    public function getmeta_h1()
+    {
+        return $this->seo->getMetaH1();
+    }
+    
     /**
      * Set title
      *
@@ -276,4 +287,28 @@ class Category implements BaseDBModel
             ]
         ];
 	}
+
+    /**
+     * Set seo
+     *
+     * @param \Sacprd\SeoBundle\Entity\Rewrite $seo
+     *
+     * @return Category
+     */
+    public function setSeo(\Sacprd\SeoBundle\Entity\Rewrite $seo = null)
+    {
+        $this->seo = $seo;
+
+        return $this;
+    }
+
+    /**
+     * Get seo
+     *
+     * @return \Sacprd\SeoBundle\Entity\Rewrite
+     */
+    public function getSeo()
+    {
+        return $this->seo;
+    }
 }

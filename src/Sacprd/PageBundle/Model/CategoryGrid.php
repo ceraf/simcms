@@ -8,7 +8,9 @@ class CategoryGrid extends Grid
 {
     protected function init()
     {
-        $this->route = 'sacprd_page_action';
+        $this->action_route = 'sacprd_page_action';
+        $this->grid_route = 'sacprd_page_list';
+        $this->title = 'Категории страниц';
         
         parent::init();
 
@@ -26,6 +28,12 @@ class CategoryGrid extends Grid
                 'label' => 'Ссылка',
                 'style' => ''
             ],
+            
+            'meta_h1' => [
+                'name' => 'meta_h1',
+                'label' => 'meta_h1',
+                'style' => ''
+            ]
         ];
     }
 }

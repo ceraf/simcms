@@ -1,12 +1,28 @@
 {% extends '@SacprdAdmin/Layout/layout.html.twig' %}
-{% block h1 %}Категории страниц{% endblock %}
+{% block h1 %}{{ title }}{% endblock %}
 {% block content %}
             <div style="margin-bottom: 15px">
                 {% for btn in buttons %}
-                    <a title="{{ btn['title'] }}" href="{{ path(btn['route'], {action: btn['action']}) }}"><button type="button" class="{{ btn['btnstyle'] }}" >Создать категорию</button></a>
+                    <a title="{{ btn['title'] }}" href="{{ path(btn['route'], {action: btn['action']}) }}"><button type="button" class="{{ btn['btnstyle'] }}" >{{ btn['title'] }}</button></a>
                 {% endfor %}
             </div>
             <!-- /.row -->
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="dataTables_length" id="dataTables-example_length">
+                        <form method="POST" action="{{ path(grid_route) }}"><label>Показывать <select onChange="$(this).parent().parent().submit()" name="page_count" aria-controls="dataTables-example" class="form-control input-sm">
+                            <option {% if paginator.itemsonpage == 10 %}selected="selected"{% endif %} value="10">10</option>
+                            <option {% if paginator.itemsonpage == 25 %}selected="selected"{% endif %} value="25">25</option>
+                            <option {% if paginator.itemsonpage == 50 %}selected="selected"{% endif %} value="50">50</option>
+                            <option {% if paginator.itemsonpage == 100 %}selected="selected"{% endif %} value="100">100</option>
+                        </select> записей</label></form>
+                    </div>
+                </div>
+                <!--<div class="col-sm-6">
+                    <div id="dataTables-example_filter" class="dataTables_filter"><label>Search:<input class="form-control input-sm" placeholder="" aria-controls="dataTables-example" type="search"></label>
+                    </div>
+                </div>-->
+            </div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
@@ -16,9 +32,11 @@
                                     <thead>
                                         <tr>
                                             {% for field in fields %}
-                                                <th>{{ field['label'] }}</th>
+                                                <th {% if field['style']|default('0') %}style="{{ field['style'] }}"{% endif %} >{{ field['label'] }}</th>
                                             {% endfor %}
-                                            <th></th>
+                                            {% if actions %}
+                                                <th></th>
+                                            {% endif %}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -26,12 +44,14 @@
                                         <tr>
                                             {% for field in fields %}
                                                 <td>{{ attribute(item, field['name']) }}</td>
-                                            {% endfor %}                                        
+                                            {% endfor %}       
+                                            {% if actions %}
 											<td class="col-lg-2">
                                                 {% for action in actions %}
                                                     <a title="{{ action['title'] }}" href="{{ path(action['route'], {id: attribute(item, action['field_id']), action: action['action']}) }}" onClick="{{ action['onclick'] }}" ><button type="button" class="btn {{ action['btntype'] }} btn-circle"><i class="{{ action['icon'] }}"></i></button></a>
                                                 {% endfor %}
                                             </td>
+                                            {% endif %}
                                         </tr>
 										{% endfor %}
                                     </tbody>
@@ -43,7 +63,24 @@
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
-
+            {% if paginator %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="dataTables_info" role="status" aria-live="polite">Показано с {{ paginator.itemsonpage*paginator.currpage + 1 }} по {{ paginator.itemsonpage*paginator.currpage + rows|length  }} из {{ paginator.total }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <ul class="pagination">
+                                <li class="paginate_button previous {% if paginator.currpage == 0 %}disabled{% endif %}" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_previous"><a href="{% if paginator.currpage == (paginator.numpages - 1) %}disabled{% endif %}" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_next"><a href="{% if paginator.currpage == 0 %}javascript:void(0){% else %}{{ path(grid_route, {p: paginator.currpage - 1}) }}{% endif %}">Пред</a></li>
+                                {% for i in 0..paginator.numpages - 1 %}
+                                    <li class="paginate_button {% if paginator.currpage == i %}active{% endif %}" aria-controls="dataTables-example" tabindex="0"><a href="{{ path(grid_route, {p: i}) }}">{{ i + 1 }}</a></li>
+                                {% endfor %}
+                                <li class="paginate_button next {% if paginator.currpage == (paginator.numpages - 1) %}disabled{% endif %}" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_next"><a href="{% if paginator.currpage == (paginator.numpages - 1) %}javascript:void(0){% else %}{{ path(grid_route, {p: paginator.currpage + 1}) }}{% endif %}">След</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
 
 
         </div>

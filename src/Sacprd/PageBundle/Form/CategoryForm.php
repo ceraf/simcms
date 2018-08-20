@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Sacprd\Core\PreviewType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -29,106 +30,103 @@ class CategoryForm extends AbstractType
 	
     protected $formName = 'page_category';
 
-    protected $fields = [
-        'title' => [
-                'name' => 'title',
-                'type' => TextType::class,
-                'params' => [
-                    'label' => 'Название категории',
-                    'required' => false,
+    
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $this->options = $options;
+
+        $builder->add(
+            'title',
+            TextType::class,
+            [
+                'label' => 'Название категории',
+                'required' => false,
+                'attr' => [
+                    'size' => '6'
                 ],
-				'constraints' => [
-					['validclass' => NotBlank::class, 'message' => "Введите заголовок"]
-				]
-        ],
-        'description' => [
-                'name' => 'description',
-                'type' => TextareaType::class,
-                'params' => [
-                    'label' => 'Описание категории',
-                    'required' => false,
-                    'attr' => array(
-                        'rows' => '10',
-                        'ckeditor' => 1
-                    )
-                ],
-				'constraints' => [
-					['validclass' => NotBlank::class, 'message' => "Введите Описание"]
-				]
-        ],
-        'meta_title' => [
-                'name' => 'meta_title',
-                'type' => TextType::class,
-                'params' => [
-                    'label' => 'Мета заголовок',
-                    'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Введите заголовок'])
                 ]
-        ],
-        'url' => [
-                'name' => 'url',
-                'type' => TextType::class,
-                'params' => [
-                    'label' => 'Ссылка',
-                    'required' => false,
-                ],
-				'constraints' => [
-					['validfunc' => 'checkUrl']
-				]
-        ],
-        'preview' => [
-                'name' => 'preview',
-                'type' => PreviewType::class,
-                'params' => [
+            ]
+        );
+        
+        $builder->add(
+            'description',
+            TextareaType::class,
+            [
+                'label' => 'Описание категории',
+                'required' => false,
+                'attr' => array(
+                    'rows' => '10',
+                    'size' => '6',
+                    'ckeditor' => 1
+                ),
+                'constraints' => [
+                    new NotBlank(['message' => 'Введите описание'])
+                ]
+            ]
+        );        
+        
+        $builder->add(
+            'meta_title',
+            TextType::class,
+            [
+                'label' => 'Мета заголовок',
+                'required' => false,
+            ]
+        );
+
+        $builder->add(
+            'seo',
+            EntityType::class,
+                   array('choice_label' => 'url',
+                        'class' => 'SacprdSeoBundle:Rewrite')
+        );
+        
+        $builder->add(
+            'url',
+            TextareaType::class,
+            [
+                'label' => 'Ссылка',
+                'required' => false,
+                'constraints' => [
+                    new Callback([$this, 'checkUrl'])
+                ]
+            ]
+        ); 
+        
+        $builder->add(
+            'preview',
+            PreviewType::class,
+            [
 					'data_class' => null,
                     'label' => 'Изображение',
                     'required' => false,
                     'attr' => array(
                         'path' => 'images/page/category/',
                     )
-                ],
-        ],
-        'meta_keyboard' => [
-                'name' => 'meta_keyboard',
-                'type' => TextareaType::class,
-                'params' => [
+                ]
+        );
+
+        $builder->add(
+            'meta_keyboard',
+            TextareaType::class,
+            [
                     'label' => 'Мета ключевые слова',
                     'required' => false,
                     'attr' => array('rows' => '5')
                 ]
-        ],
-        'meta_description' => [
-                'name' => 'meta_description',
-                'type' => TextareaType::class,
-                'params' => [
+        );        
+        
+        $builder->add(
+            'meta_description',
+            TextareaType::class,
+            [
                     'label' => 'Мета описание',
                     'required' => false,
                     'attr' => array('rows' => '5')
                 ]
-        ],
-    ];
-    
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $this->options = $options;
-
-        foreach ($this->fields as $field) {
-			if (isset($field['constraints'])) {
-				$validparam = [];	
-				$constraints = [];
-				foreach($field['constraints'] as $constr) {
-
-					if (isset($constr['message']))
-						$validparam['message'] = $constr['message'];
-                    if (isset($constr['validclass']))
-                        $constraints[] = new $constr['validclass']($validparam);
-                    elseif (isset($constr['validfunc']))
-                        $constraints[] = new Callback([$this, $constr['validfunc']]);
-                    //    $constraints[] = $this->$constr['validfunc']($validparam);
-				}
-				$field['params']['constraints'] = $constraints;
-			}
-			$builder->add($field['name'], $field['type'], $field['params']);
-		}   
+        );  
     }
     
     public function checkUrl($data, ExecutionContextInterface $context)

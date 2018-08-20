@@ -11,16 +11,6 @@ use Sacprd\Core\BaseDBModel;
  */
 class Category implements BaseDBModel
 {
-    public function getSeoUrlKey()
-    {
-        return 'pages/category/' . $this->getId();
-    }
-    
-    public function isHasSeoUrl()
-    {
-        return true;
-    }
-    
 	/**
 	* @ORM\Id
 	* @ORM\Column(type="integer")
@@ -59,7 +49,7 @@ class Category implements BaseDBModel
 	protected $meta_keyboard;    
     
     /**
-	* @ORM\column(type="string", length=500)
+	* @ORM\column(type="string", length=500, nullable=true)
 	*/
 	protected $preview;
 	
@@ -68,6 +58,12 @@ class Category implements BaseDBModel
 	*/
 	protected $description;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Sacprd\SeoBundle\Entity\Rewrite", inversedBy="category", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="seo_id", referencedColumnName="id")
+     */
+	protected $seo;    
+    
     /**
      * Get id
      *
@@ -243,4 +239,47 @@ class Category implements BaseDBModel
     {
         return $this->site_id;
     }
+
+    /**
+     * Set preview
+     *
+     * @param string $preview
+     *
+     * @return Category
+     */
+    public function setPreview($preview)
+    {
+        $this->preview = $preview;
+
+        return $this;
+    }
+
+    /**
+     * Get preview
+     *
+     * @return string
+     */
+    public function getPreview()
+    {
+        return $this->preview;
+    }
+
+    public function getSeoUrlKey()
+    {
+        return 'pages/category/' . $this->getId();
+    }
+    
+    public function isHasSeoUrl()
+    {
+        return true;
+    }
+	
+	public function getFilesFileds()
+	{
+		return [
+            'preview' => [
+                'path' => 'images/page/category/'
+            ]
+        ];
+	}
 }
