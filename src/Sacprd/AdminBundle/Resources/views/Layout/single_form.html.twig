@@ -23,11 +23,20 @@
 
 {% block preview_widget %}
 	{% spaceless %}
+    
 	<div class="preview_field">
-		<a href="javascript:void(0)"><img style="width: 50%" src="/admin/{% if value %}{{attr.path}}{{ value }}{% else %}images/no-preview-big.jpg{% endif %}" /></a>
-        <input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" >
+        <div id="preview_file_name"></div>
+		<a href="javascript:void(0)"><img class="img-responsive" src="/admin/{% if value %}{{attr.path}}{{ value }}{% else %}images/no-preview-big.jpg{% endif %}" /></a>
+        <input id="preview_fiels" type="hidden" {{ block('widget_attributes') }} value="{{ value }}" >
 		<input  type="file" style="display: none" name="{{ name }}" >
-	</div>
+        <div class="img-btn">
+            <button id="add_img" type="button" class="btn btn-primary btn-circle btn-lg" {% if value %}style="display: none"{% endif %}><i class="fa fa-file-o"></i></button>
+            <button id="edit_img" type="button" class="btn btn-success btn-circle btn-lg" {% if not value %}style="display: none"{% endif %}><i class="fa fa-edit"></i></button>
+            <button id="del_img" type="button" class="btn btn-danger btn-circle btn-lg" {% if not value %}style="display: none"{% endif %}><i class="fa fa-trash-o"></i></button>
+        </div>
+
+    </div>
+
 	{% endspaceless %}
 {% endblock preview_widget %}
 

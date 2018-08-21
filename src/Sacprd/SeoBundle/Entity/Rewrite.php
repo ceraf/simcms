@@ -33,22 +33,22 @@ class Rewrite
 	protected $route;
 
 	/**
-	* @ORM\column(type="string", length=255)
+	* @ORM\column(type="string", length=255, nullable=true)
 	*/
 	protected $meta_title;
 	
 	/**
-	* @ORM\column(type="string", length=255)
+	* @ORM\column(type="string", length=255, nullable=true)
 	*/
 	protected $meta_h1;
     
     /**
-	* @ORM\column(type="string", length=500)
+	* @ORM\column(type="string", length=500, nullable=true)
 	*/
 	protected $meta_description;
     
     /**
-	* @ORM\column(type="string", length=500)
+	* @ORM\column(type="string", length=500, nullable=true)
 	*/
 	protected $meta_keyboard;  
 	

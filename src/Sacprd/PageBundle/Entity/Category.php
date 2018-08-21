@@ -5,9 +5,12 @@ namespace Sacprd\PageBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Sacprd\Core\BaseDBModel;
 
+use App\Service\FileUploader;
+
 /**
  * @ORM\Entity(repositoryClass="Sacprd\PageBundle\Entity\Repository\CategoryRepository")
  * @ORM\Table(name="page_category")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Category implements BaseDBModel
 {
@@ -63,6 +66,8 @@ class Category implements BaseDBModel
      * @ORM\JoinColumn(name="seo_id", referencedColumnName="id")
      */
 	protected $seo;    
+    
+    protected $oldpreview;
     
     /**
      * Get id
@@ -255,10 +260,26 @@ class Category implements BaseDBModel
     public function setPreview($preview)
     {
         $this->preview = $preview;
-
         return $this;
     }
 
+    public function saveFiles($files, $path)
+    {
+        $localpath = 'admin/images/page/category/';
+        $file = $files->get('preview');
+        if ($file) {
+            $fileUploader = new FileUploader($path . $localpath);
+            $fileName = $fileUploader->upload($file);
+            $this->setPreview($fileName);
+        }
+        
+        if (($this->oldpreview != $this->preview) && $this->oldpreview) {
+            unlink($path . $localpath.$this->oldpreview);
+        } 
+        
+        return $this;
+    }
+    
     /**
      * Get preview
      *
@@ -269,6 +290,14 @@ class Category implements BaseDBModel
         return $this->preview;
     }
 
+    /**
+     * @ORM\PostLoad 
+     */
+    public function postLoad()
+    {
+        $this->oldpreview = $this->preview;
+    }
+    
     public function getSeoUrlKey()
     {
         return 'pages/category/' . $this->getId();

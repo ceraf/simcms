@@ -63,20 +63,28 @@ class AdminpagesController extends AdminController
     
 	public function editAction($id, Request $request)
 	{
+        return $this->getFormAction($request)
+                ->setEntiry('Sacprd\PageBundle\Entity\Category')
+                ->setForm(CategoryForm::class)
+                ->setTitle(($id) ? 'Редактировать категорию' : 'Создать категорию')
+                ->setHomeRoute('sacprd_page_list')
+                ->execute('edit', ['id' => $id]);
+        exit;
+		$entity = 'Sacprd\PageBundle\Entity\Category';
+		$formclass = CategoryForm::class;
+		
 		if ($id) {
-			$category = $this->getDoctrine()
-					->getRepository('Sacprd\PageBundle\Entity\Category')
-					->find($id);
-        //    if ($category->getPreview())
-          //      $category->setPreview(new File($this->getParameter('brochures_directory').'/'.$category->getPreview()));        
+			$row = $this->getDoctrine()
+					->getRepository($entity)
+					->find($id);      
 		} else {
-			$category = new Category();
+			$row = new $entity();
         }
         
         $title = ($id) ? 'Редактировать категорию' : 'Создать категорию';
         $homeroute = 'sacprd_page_list';
         
-        $form = $this->createForm(CategoryForm::class, $category);
+        $form = $this->createForm($formclass, $row);
 
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
@@ -84,57 +92,16 @@ class AdminpagesController extends AdminController
             
             
             if ($form->isValid()) {
-           
-            
-				if ($category->getFilesFileds()) {
-					foreach ($category->getFilesFileds() as $field => $item) {
-
-                        
-                        $file = $request->files->get($field);
-                                if ($file ) {
-                                    $fileUploader = new FileUploader($this->getParameter('admin_path').$item['path']);
-                                    $fileName = $fileUploader->upload($file);
-                                    $method = 'set'.ucfirst($field);
-                                    $category->$method($fileName);
-                                }                         
-                    }
-                        /*
-                        $file = $category->$func['get']();
-				if ($category->getFilesFileds()) {
-					foreach ($category->getFilesFileds() as $field => $item) {
-                        $file = $request->files->get($field);
-						if ($file ) {
-                            $fileUploader = new FileUploader($item['path']);
-							$fileName = $fileUploader->upload($file);
-							$category->$item['set']($fileName);
-						}  
-                        
-                        $file = $category->$func['get']();
-                        $fileName = $fileUploader->upload($file);
-                        $category->$func['set']($fileName);
-                    
-						$file = $category->$func['get']();
-						$fileName = md5(uniqid()).'.'.$file->guessExtension();
-						$file->move(
-							$this->getParameter('brochures_directory'),
-							$fileName
-						);
-						$category->$func['set']($fileName);
-                        */
-					//}
-				}
-				
-				
-				
-
-				
+                if (method_exists($row, 'saveFiles'))
+                    $row->saveFiles($request->files, $this->getParameter('admin_path'));
+		
                 $em = $this->getDoctrine()->getEntityManager();
                 $em->getConnection()->beginTransaction();
                 try {
                     $em->persist($form->getData());
                     $em->flush();
                     
-                    if ($category->isHasSeoUrl()) {
+                    if ($row->isHasSeoUrl()) {
                         if ($id) {
                             $seourl = $this->getDoctrine()
                                     ->getRepository('Sacprd\SeoBundle\Entity\Rewrite')
@@ -166,27 +133,5 @@ class AdminpagesController extends AdminController
             'title' => $title,
             'home_route' => $homeroute
         ));
-        
-        /*
-$author = new Acme\BlogBundle\Entity\Author();
-$form = $this->createForm(new AuthorType(), $author);
-        if ($request->getMethod() == 'POST') {
-            $form->bindRequest($request);
-        if ($form->isValid()) {
-
-            $this->redirect($this->generateUrl('...'));
-        }
-}
-return $this->render('BlogBundle:Author:form.html.twig', array(
-'form' => $form->createView(),
-));
-		$category = $this->getDoctrine()
-					->getRepository('Sacprd\PageBundle\Entity\Category')
-					->find($id);
-        if (!$category) {
-            throw $this->createNotFoundException('No category found for id '.$id);
-            }
-        return $this->render('SacprdPageBundle:Categories:adm_edit.html.twig', array('item' => $category));
-*/
     }
 }
