@@ -27,12 +27,6 @@ class CategoryGrid extends Grid
                 'name' => 'url',
                 'label' => 'Ссылка',
                 'style' => ''
-            ],
-            
-            'meta_h1' => [
-                'name' => 'meta_h1',
-                'label' => 'meta_h1',
-                'style' => ''
             ]
         ];
     }

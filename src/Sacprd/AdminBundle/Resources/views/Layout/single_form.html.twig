@@ -26,7 +26,7 @@
     
 	<div class="preview_field">
         <div id="preview_file_name"></div>
-		<a href="javascript:void(0)"><img class="img-responsive" src="/admin/{% if value %}{{attr.path}}{{ value }}{% else %}images/no-preview-big.jpg{% endif %}" /></a>
+		<a href="javascript:void(0)"><img class="img-responsive" src="/{% if value %}{{attr.path}}{{ value }}{% else %}images/no-preview-big.jpg{% endif %}" /></a>
         <input id="preview_fiels" type="hidden" {{ block('widget_attributes') }} value="{{ value }}" >
 		<input  type="file" style="display: none" name="{{ name }}" >
         <div class="img-btn">

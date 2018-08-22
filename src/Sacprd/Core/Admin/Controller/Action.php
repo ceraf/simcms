@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Action
 {
+    const REWRITE_ENTITY = 'Sacprd\SeoBundle\Entity\Rewrite';
+    
     protected $entity;
     protected $container;
     protected $formclass;
@@ -33,7 +35,7 @@ class Action
         return $this;
     }
     
-    public function setEntiry($entity)
+    public function setEntity($entity)
     {
         $this->entity = $entity;
         return $this;
@@ -51,7 +53,7 @@ class Action
         return $this;
     }
     
-    public function execute($action, $params)
+    public function execute($action, $params = [])
     {
         $action .= 'Action';
         return $this->$action($params);
@@ -67,6 +69,57 @@ class Action
     {
 		$this->homeroute = $homeroute;
 		return $this;        
+    }
+    
+    protected function redirect($route, $params = [])
+    {
+        return new RedirectResponse($this->container->get('router')->generate($route, $params, 
+                            UrlGeneratorInterface::ABSOLUTE_PATH), 302);
+    }
+    
+    protected function render($tempname, $params = [])
+    {
+        return new Response($this->template->render($tempname, $params));
+    }
+    
+    protected function deleteAction($params)
+    {
+        $id = $params['id'];
+        if ($id) {
+            $row = $this->doctrine
+					->getRepository($this->entity)
+					->find($id);
+            $em = $this->doctrine->getEntityManager();
+            if ($row) {
+
+						
+                try {       
+                    if (method_exists($row, 'deleteFiles'))
+                        $row->deleteFiles($this->container->getParameter('admin_path'));
+                    
+                    $em->getConnection()->beginTransaction();
+                    if ($row->isHasSeoUrl())
+                        $this->deleteRewrite($row->getSeoUrlKey());
+                    
+                    $em->remove($row);
+                    $em->flush();
+                    $this->flashMessage('notice', 'Категория удалена.');
+                    $em->getConnection()->commit();
+                } catch (Exception $e) {
+                    $this->flashMessage('notice', 'При удалении категории произошла ошибка.');
+                    $em->getConnection()->rollback();
+                }
+            } else {
+                $this->flashMessage('error', 'При удалении категории произошла ошибка.');
+            }
+        }
+        
+        return $this->redirect($this->homeroute);
+    }
+    
+    protected function flashMessage($type, $mes)
+    {
+        $this->container->get('session')->getFlashBag()->add($type, $mes);
     }
     
     protected function editAction($params)
@@ -96,38 +149,59 @@ class Action
                     $em->flush();
                     
                     if ($row->isHasSeoUrl()) {
-                        if ($id) {
-                            $seourl = $this->doctrine
-                                    ->getRepository('Sacprd\SeoBundle\Entity\Rewrite')
-                                    ->findOneBy(array('route' => $form->getData()->getSeoUrlKey()));
-                            if (empty($seourl))
-                                $seourl = new Rewrite();
-                        } else 
-                            $seourl = new Rewrite();
-
-                        $seourl->setUrl($form->getData()->getUrl());
-                        $seourl->setSiteId($form->getData()->getSiteId());
-                        $seourl->setRoute($form->getData()->getSeoUrlKey());
-                        $em->persist($seourl);
-                        $em->flush();                    
+                        $this->saveRewrite([
+                            'id' => $id,
+                            'route' => $form->getData()->getSeoUrlKey(),
+                            'url' => $form->getData()->getUrl()
+                        ]);                     
                     }
                     
                     $em->getConnection()->commit();
-                    $this->container->get('session')->getFlashBag()->add('notice', 'Категория сохранена.');
+                    $this->flashMessage('notice', 'Категория сохранена.');
                 } catch (Exception $e) {
                     $em->getConnection()->rollback();
                     throw $e;
                 }
 
-                return new RedirectResponse($this->container->get('router')->generate($this->homeroute, [], 
-                            UrlGeneratorInterface::ABSOLUTE_PATH), 302);
+                return $this->redirect($this->homeroute);
             }
         } 
            
-        return new Response($this->template->render('@SacprdPage/Categories/adm_edit.html.twig', array(
+        return $this->render('@SacprdAdmin/form_edit.html.twig', array(
             'form' => $form->createView(),
             'title' => $this->title,
             'home_route' => $this->homeroute
-        )));
+        ));
+    }
+    
+    protected function deleteRewrite($route)
+    {
+        $em = $this->doctrine->getEntityManager();
+        $seourl = $this->doctrine
+                    ->getRepository(self::REWRITE_ENTITY)
+                    ->findOneBy(array('route' => $route));
+		if ($seourl) {
+			$em->remove($seourl);
+			$em->flush();
+		}           
+    }
+    
+    protected function saveRewrite($data)
+    {
+        $em = $this->doctrine->getEntityManager();
+        if ($data['id']) {
+            $seourl = $this->doctrine
+                ->getRepository(self::REWRITE_ENTITY)
+                ->findOneBy(array('route' => $data['route']));
+            if (empty($seourl))
+                $seourl = new Rewrite();
+        } else 
+            $seourl = new Rewrite();
+
+        $seourl->setUrl($data['url']);
+        $seourl->setSiteId(0);
+        $seourl->setRoute($data['route']);
+        $em->persist($seourl);
+        $em->flush();  
     }
 }

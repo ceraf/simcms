@@ -75,13 +75,6 @@ class CategoryForm extends AbstractType
                 'required' => false,
             ]
         );
-
-        $builder->add(
-            'seo',
-            EntityType::class,
-                   array('choice_label' => 'url',
-                        'class' => 'SacprdSeoBundle:Rewrite')
-        );
         
         $builder->add(
             'url',

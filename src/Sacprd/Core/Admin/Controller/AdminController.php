@@ -10,6 +10,12 @@ use Sacprd\Core\Admin\Controller\Action as FormAction;
 
 class AdminController extends Controller
 {
+    public function rowactAction($id, $action, Request $request)
+    {
+        $method = $action . 'Action';
+        return $this->$method($id, $request);
+    }
+    
 	protected function getGrid(Grid $Grid)
 	{
 		$Grid->setDoctrine($this->getDoctrine())

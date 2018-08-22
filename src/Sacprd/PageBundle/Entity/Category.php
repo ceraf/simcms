@@ -14,6 +14,8 @@ use App\Service\FileUploader;
  */
 class Category implements BaseDBModel
 {
+    const LOCAL_PATH = 'images/page/category/';
+    
 	/**
 	* @ORM\Id
 	* @ORM\Column(type="integer")
@@ -59,16 +61,10 @@ class Category implements BaseDBModel
 	/**
 	* @ORM\column(type="text")
 	*/
-	protected $description;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Sacprd\SeoBundle\Entity\Rewrite", inversedBy="category", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="seo_id", referencedColumnName="id")
-     */
-	protected $seo;    
+	protected $description;   
     
     protected $oldpreview;
-    
+
     /**
      * Get id
      *
@@ -100,11 +96,6 @@ class Category implements BaseDBModel
     public function getDescription()
     {
         return $this->description;
-    }
-
-    public function getmeta_h1()
-    {
-        return $this->seo->getMetaH1();
     }
     
     /**
@@ -265,19 +256,27 @@ class Category implements BaseDBModel
 
     public function saveFiles($files, $path)
     {
-        $localpath = 'admin/images/page/category/';
         $file = $files->get('preview');
         if ($file) {
-            $fileUploader = new FileUploader($path . $localpath);
+            $fileUploader = new FileUploader($path . self::LOCAL_PATH);
             $fileName = $fileUploader->upload($file);
             $this->setPreview($fileName);
         }
         
         if (($this->oldpreview != $this->preview) && $this->oldpreview) {
-            unlink($path . $localpath.$this->oldpreview);
+            unlink($path . self::LOCAL_PATH.$this->oldpreview);
         } 
         
         return $this;
+    }
+    
+    public function deleteFiles($path)
+    {
+        if ($this->oldpreview) {
+            unlink($path . self::LOCAL_PATH.$this->oldpreview);
+        } 
+        
+        return $this;        
     }
     
     /**
@@ -316,28 +315,4 @@ class Category implements BaseDBModel
             ]
         ];
 	}
-
-    /**
-     * Set seo
-     *
-     * @param \Sacprd\SeoBundle\Entity\Rewrite $seo
-     *
-     * @return Category
-     */
-    public function setSeo(\Sacprd\SeoBundle\Entity\Rewrite $seo = null)
-    {
-        $this->seo = $seo;
-
-        return $this;
-    }
-
-    /**
-     * Get seo
-     *
-     * @return \Sacprd\SeoBundle\Entity\Rewrite
-     */
-    public function getSeo()
-    {
-        return $this->seo;
-    }
 }
