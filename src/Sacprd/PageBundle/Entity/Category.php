@@ -5,7 +5,7 @@ namespace Sacprd\PageBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Sacprd\Core\BaseDBModel;
 
-use App\Service\FileUploader;
+use AppBundle\Service\FileUploader;
 
 /**
  * @ORM\Entity(repositoryClass="Sacprd\PageBundle\Entity\Repository\CategoryRepository")
@@ -254,26 +254,27 @@ class Category implements BaseDBModel
         return $this;
     }
 
-    public function saveFiles($files, $path)
+    public function saveFiles($files, FileUploader $uploader)
     {
         $file = $files->get('preview');
         if ($file) {
-            $fileUploader = new FileUploader($path . self::LOCAL_PATH);
-            $fileName = $fileUploader->upload($file);
+            //$fileUploader = new FileUploader($path . self::LOCAL_PATH);
+            $fileName = $uploader->upload(self::LOCAL_PATH, $file);
             $this->setPreview($fileName);
         }
         
         if (($this->oldpreview != $this->preview) && $this->oldpreview) {
-            unlink($path . self::LOCAL_PATH.$this->oldpreview);
+            $uploader->delete(self::LOCAL_PATH, $this->oldpreview);
+        //    unlink($path . self::LOCAL_PATH.$this->oldpreview);
         } 
         
         return $this;
     }
     
-    public function deleteFiles($path)
+    public function deleteFiles(FileUploader $uploader)
     {
         if ($this->oldpreview) {
-            unlink($path . self::LOCAL_PATH.$this->oldpreview);
+            $uploader->delete(self::LOCAL_PATH, $this->oldpreview);
         } 
         
         return $this;        

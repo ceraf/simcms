@@ -10,6 +10,25 @@
     {% endspaceless %}
 {% endblock form_row %}
 
+{% block checkbox_row %}
+    {% spaceless %}
+        <div class="col-lg-{{form.vars.attr.size|default('12')}}">
+            <div class="form-group {% if not form.vars.valid %}has-error{% endif %}">
+                <div class="checkbox">
+                    <label>
+                        {{ form_widget(form) }}{{ form_label(form) }}
+                    </label>
+                </div>
+            {{ form_errors(form) }}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock checkbox_row %}
+
+{% block checkbox_label %}
+    {{ label }}
+{% endblock checkbox_label %}
+
 {% block textarea_widget %}
 	{% spaceless %}
     <textarea {{ block('widget_attributes') }} >{% if value is not empty %}{{ value }}{% endif %}</textarea>
@@ -20,6 +39,15 @@
     {% endif %}
 	{% endspaceless %}
 {% endblock textarea_widget %}
+
+{%- block password_widget -%}
+    {%- set type = type|default('password') -%}
+    {{ block('form_widget_userpassword') }}
+{%- endblock password_widget -%}
+
+{%- block form_widget_userpassword -%}
+    <input type="password" {{ block('widget_attributes') }} value="5fghsr5hwth"/>
+{%- endblock form_widget_userpassword -%}
 
 {% block preview_widget %}
 	{% spaceless %}

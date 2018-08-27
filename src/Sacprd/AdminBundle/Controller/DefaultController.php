@@ -8,6 +8,6 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('@SacprdAdmin/Default/index.html.twig', array());
+        return $this->render('@SacprdAdmin/Default/index.html.twig', array())->setSharedMaxAge(100);;
     }
 }

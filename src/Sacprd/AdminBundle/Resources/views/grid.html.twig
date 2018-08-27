@@ -7,6 +7,7 @@
                 {% endfor %}
             </div>
             <!-- /.row -->
+            {% if paginator %}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="dataTables_length" id="dataTables-example_length">
@@ -23,6 +24,8 @@
                     </div>
                 </div>-->
             </div>
+            {% endif %}
+            {% if rows %}
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
@@ -62,6 +65,7 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            {% endif %}
             <!-- /.row -->
             {% if paginator %}
                 <div class="row">

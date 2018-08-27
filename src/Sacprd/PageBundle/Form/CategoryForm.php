@@ -81,10 +81,10 @@ class CategoryForm extends AbstractType
             TextareaType::class,
             [
                 'label' => 'Ссылка',
-                'required' => false,
+                'required' => false,/*
                 'constraints' => [
                     new Callback([$this, 'checkUrl'])
-                ]
+                ]*/
             ]
         ); 
         

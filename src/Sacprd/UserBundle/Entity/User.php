@@ -3,13 +3,14 @@
 namespace Sacprd\UserBundle\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use Sacprd\Core\BaseDBModel;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="users")
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, \Serializable, BaseDBModel
 {
     /**
 	* @ORM\Id
@@ -27,18 +28,23 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="string", length=64)
      */
     private $password;
-
+    
     /**
      * @ORM\Column(type="string", length=60, unique=true)
      */
     private $email;
 
     /**
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(type="boolean")
      */
-    private $isActive;
+    private $is_active;
 
-
+    /**
+    * @ORM\ManyToOne(targetEntity="Group", inversedBy="users")
+    * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+    */
+    private $group;
+    
     public function __construct()
     {
         $this->isActive = true;
@@ -94,7 +100,8 @@ class User implements UserInterface, \Serializable
      */
     public function setPassword($password)
     {
-        $this->password = $password;
+        if ($password != '5fghsr5hwth')
+            $this->password = md5($password);
 
         return $this;
     }
@@ -108,7 +115,7 @@ class User implements UserInterface, \Serializable
     {
         return $this->password;
     }
-
+    
     /**
      * Set email
      *
@@ -132,28 +139,7 @@ class User implements UserInterface, \Serializable
         return $this->email;
     }
 
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     * @return User
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
 
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean 
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
     
     
     public function getRoles()
@@ -188,4 +174,72 @@ class User implements UserInterface, \Serializable
             // $this->salt
         ) = unserialize($serialized, array('allowed_classes' => false));
     }
+
+    /**
+     * Set group
+     *
+     * @param \Sacprd\UserBundle\Entity\Group $group
+     *
+     * @return User
+     */
+    public function setGroup(\Sacprd\UserBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \Sacprd\UserBundle\Entity\Group
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->is_active = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->is_active;
+    }
+    
+    public function getis_active()
+    {
+        return $this->getIsActive();
+    }
+    
+    public function getgroupname()
+    {
+        return ($this->getGroup()) ? $this->getGroup()->getTitle() : null;
+    }
+    
+    public function isHasSeoUrl()
+    {
+        return false;
+    }
+	
+	public function getSeoUrlKey()
+	{
+		return null;
+	}
 }

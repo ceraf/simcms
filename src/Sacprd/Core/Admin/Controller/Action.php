@@ -2,6 +2,7 @@
 
 namespace Sacprd\Core\Admin\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Sacprd\PageBundle\Controller\AdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Sacprd\SeoBundle\Entity\Rewrite;
@@ -11,6 +12,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Action
 {
+    use ControllerTrait;
+    
     const REWRITE_ENTITY = 'Sacprd\SeoBundle\Entity\Rewrite';
     
     protected $entity;
@@ -18,8 +21,6 @@ class Action
     protected $formclass;
     protected $actionname;
     protected $request;
-    protected $doctrine;
-    protected $template;
     protected $homeroute;
     
     public function __construct(Request $request, $container)
@@ -28,13 +29,7 @@ class Action
         $this->container = $container;
         return $this;
     }
-    
-    public function setDoctrine($doctrine)
-    {
-        $this->doctrine = $doctrine;
-        return $this;
-    }
-    
+
     public function setEntity($entity)
     {
         $this->entity = $entity;
@@ -59,43 +54,24 @@ class Action
         return $this->$action($params);
     }
     
-	public function setTemplating($template)
-	{
-		$this->template = $template;
-		return $this;
-	}
-    
     public function setHomeRoute($homeroute)
     {
 		$this->homeroute = $homeroute;
 		return $this;        
     }
     
-    protected function redirect($route, $params = [])
-    {
-        return new RedirectResponse($this->container->get('router')->generate($route, $params, 
-                            UrlGeneratorInterface::ABSOLUTE_PATH), 302);
-    }
-    
-    protected function render($tempname, $params = [])
-    {
-        return new Response($this->template->render($tempname, $params));
-    }
-    
     protected function deleteAction($params)
     {
         $id = $params['id'];
         if ($id) {
-            $row = $this->doctrine
+            $row = $this->getDoctrine()
 					->getRepository($this->entity)
 					->find($id);
-            $em = $this->doctrine->getEntityManager();
+            $em = $this->getDoctrine()->getEntityManager();
             if ($row) {
-
-						
                 try {       
                     if (method_exists($row, 'deleteFiles'))
-                        $row->deleteFiles($this->container->getParameter('admin_path'));
+                        $row->deleteFiles($this->container->get('file_uploader'));
                     
                     $em->getConnection()->beginTransaction();
                     if ($row->isHasSeoUrl())
@@ -114,7 +90,7 @@ class Action
             }
         }
         
-        return $this->redirect($this->homeroute);
+        return $this->redirect($this->generateUrl($this->homeroute));
     }
     
     protected function flashMessage($type, $mes)
@@ -126,7 +102,7 @@ class Action
     { 
         $id = $params['id'];
 		if ($id) {
-			$row = $this->doctrine
+			$row = $this->getDoctrine()
 					->getRepository($this->entity)
 					->find($id);      
 		} else {
@@ -140,9 +116,9 @@ class Action
             
             if ($form->isValid()) {
                 if (method_exists($row, 'saveFiles'))
-                    $row->saveFiles($this->request->files, $this->container->getParameter('admin_path'));
+                    $row->saveFiles($this->request->files, $this->container->get('file_uploader'));
 		
-                $em = $this->doctrine->getEntityManager();
+                $em = $this->getDoctrine()->getEntityManager();
                 $em->getConnection()->beginTransaction();
                 try {
                     $em->persist($form->getData());
@@ -163,7 +139,7 @@ class Action
                     throw $e;
                 }
 
-                return $this->redirect($this->homeroute);
+                return $this->redirect($this->generateUrl($this->homeroute));
             }
         } 
            
@@ -176,8 +152,8 @@ class Action
     
     protected function deleteRewrite($route)
     {
-        $em = $this->doctrine->getEntityManager();
-        $seourl = $this->doctrine
+        $em = $this->getDoctrine()->getEntityManager();
+        $seourl = $this->getDoctrine()
                     ->getRepository(self::REWRITE_ENTITY)
                     ->findOneBy(array('route' => $route));
 		if ($seourl) {
@@ -188,9 +164,9 @@ class Action
     
     protected function saveRewrite($data)
     {
-        $em = $this->doctrine->getEntityManager();
+        $em = $this->getDoctrine()->getEntityManager();
         if ($data['id']) {
-            $seourl = $this->doctrine
+            $seourl = $this->getDoctrine()
                 ->getRepository(self::REWRITE_ENTITY)
                 ->findOneBy(array('route' => $data['route']));
             if (empty($seourl))

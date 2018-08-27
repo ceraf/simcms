@@ -1,20 +1,16 @@
 <?php
 
-namespace Sacprd\PageBundle\Controller;
+namespace Sacprd\UserBundle\Controller;
 
-use Sacprd\PageBundle\Entity\Category as Entity;
-use Sacprd\PageBundle\Form\CategoryForm as Form;
-use Sacprd\PageBundle\Model\CategoryGrid as Grid;
+use Sacprd\UserBundle\Form\UserForm as Form;
+use Sacprd\UserBundle\Model\UserGrid as Grid;
+use Sacprd\UserBundle\Entity\User as Entity;
 
 use Sacprd\Core\Admin\Controller\AdminController;
-
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-class AdminpagesController extends AdminController
+class AdminusersController extends AdminController
 {
-    const CATEGORY_ENTITY = 'Sacprd\PageBundle\Entity\Category';
-    
     public function listAction(Request $request)
     {
 		return $this->getGrid(Grid::class, $request);				
@@ -22,19 +18,25 @@ class AdminpagesController extends AdminController
 
 	public function deleteAction($id, Request $request)
     {
+        $homeroute = 'sacprd_user_list';
+        
         return $this->getFormAction($request)
                 ->setEntity(Entity::class)
-                ->setHomeRoute('sacprd_page_list')
+                ->setHomeRoute($homeroute)
                 ->execute('delete', ['id' => $id]);      
     }
     
 	public function editAction($id, Request $request)
 	{
+        $edittitle = 'Редактировать пользователя';
+        $newtitle = 'Создать пользователя';
+        $homeroute = 'sacprd_user_list';
+        
         return $this->getFormAction($request)
                 ->setEntity(Entity::class)
                 ->setForm(Form::class)
-                ->setTitle(($id) ? 'Редактировать категорию' : 'Создать категорию')
-                ->setHomeRoute('sacprd_page_list')
+                ->setTitle(($id) ? $edittitle : $newtitle)
+                ->setHomeRoute($homeroute)
                 ->execute('edit', ['id' => $id]);
     }
 }

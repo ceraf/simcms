@@ -2,7 +2,6 @@
 
 namespace Sacprd\Core\Admin\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sacprd\Core\Admin\Grid\Grid;
@@ -16,18 +15,15 @@ class AdminController extends Controller
         return $this->$method($id, $request);
     }
     
-	protected function getGrid(Grid $Grid)
+	protected function getGrid($grid, Request $request)
 	{
-		$Grid->setDoctrine($this->getDoctrine())
-				->setTemplating($this->get('templating'));
-		return new Response($Grid->getResponse());
+		$OGrid = (new $grid ($request, $this->container));
+		return $OGrid->getResponse();
 	}
     
     protected function getFormAction(Request $request)
     {
-        return (new FormAction($request, $this->container))
-                ->setDoctrine($this->getDoctrine())
-                ->setTemplating($this->get('templating'));
+        return (new FormAction($request, $this->container));
     }
     
 }

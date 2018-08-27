@@ -2,16 +2,18 @@
 
 namespace Sacprd\Core\Admin\Grid;
 
+use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\HttpFoundation\Request;
 use \stdClass;
 
 abstract class Grid
 {
+    use ControllerTrait;
+    
     const SESSION_COUNT_ITEMS = 'numitems';
     
-    private $doctrine;
-	private $template;
     private $session;
+    protected $container;
     protected $entityname;
     protected $collection;
     protected $paginator;
@@ -24,33 +26,23 @@ abstract class Grid
     protected $request;
     protected $itemsonpage = 3;
 
-    public function __construct (Request $request)
+    public function __construct (Request $request, $container)
     {
+        $this->container = $container;
         $this->request = $request;
         $this->session = $request->getSession();
+        $this->template = $this->get('templating');
         $this->itemsonpage = ($this->session->get((new \ReflectionClass($this))->getShortName().'_'.self::SESSION_COUNT_ITEMS)) ?? $this->itemsonpage;
         $this->init();
         return $this;
     }
-    
-	public function setDoctrine($doctrine)
-	{
-		$this->doctrine = $doctrine;
-		return $this;
-	}
-	
-	public function setTemplating($template)
-	{
-		$this->template = $template;
-		return $this;
-	}
 
     public function getResponse()
     {
         if (!$this->collection)
             $this->fetch();
             
-        return $this->template->render('@SacprdAdmin/grid.html.twig',
+        return $this->render('@SacprdAdmin/grid.html.twig',
             [
                 'rows' => $this->getCollection(),
                 'paginator' => $this->paginator,
@@ -99,8 +91,16 @@ abstract class Grid
         ];
     }
 
-    protected function getPaginator($total, $p)
+    protected function getPaginator($p)
     {
+            $total = $this->getDoctrine()
+                ->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(p.id)')
+                ->from($this->entityname,'p')
+                ->getQuery()
+                ->getSingleScalarResult(); 
+        
         if (!$total)
             return null;
     
@@ -124,20 +124,24 @@ abstract class Grid
     {
         $p = $this->request->get('p') ?? '0';
         try {
-            $total = $this->doctrine
-                ->getEntityManager()
-                ->createQueryBuilder()
-                ->select('count(p.id)')
-                ->from($this->entityname,'p')
-                ->getQuery()
-                ->getSingleScalarResult();        
+       
         
-            $this->paginator = $this->getPaginator($total, $p);
+            
             
             $offset = $p*$this->itemsonpage;
-            $this->collection = $this->doctrine
-                            ->getRepository($this->entityname)
-                            ->getByPage($this->entityname, $offset, $this->itemsonpage);
+            $repository = $this->collection = $this->getDoctrine()
+                            ->getRepository($this->entityname);
+                            
+            if (method_exists($repository, 'getByPage')) {
+                $this->collection = $repository->getByPage($this->entityname, $offset, $this->itemsonpage);
+                $this->paginator = $this->getPaginator($p);
+            } else {
+                $this->collection = $repository->findBy([]);
+                $this->paginator = null;
+            }
+                
+            
+            
         } catch (Exception $e) {
             throw new Exception('Ошибка базы данных.');
         }
