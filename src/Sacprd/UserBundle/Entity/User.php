@@ -139,12 +139,9 @@ class User implements UserInterface, \Serializable, BaseDBModel
         return $this->email;
     }
 
-
-    
-    
     public function getRoles()
     {
-        return array('ROLE_ADMIN');
+        return [$this->group->getRole()];//array('ROLE_ADMIN');
     }
     
     public function eraseCredentials()

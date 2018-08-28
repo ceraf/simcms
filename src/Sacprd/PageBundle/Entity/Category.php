@@ -5,7 +5,10 @@ namespace Sacprd\PageBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Sacprd\Core\BaseDBModel;
 
+use Sacprd\Core\FileUploaderTrait;
 use AppBundle\Service\FileUploader;
+
+
 
 /**
  * @ORM\Entity(repositoryClass="Sacprd\PageBundle\Entity\Repository\CategoryRepository")
@@ -14,6 +17,8 @@ use AppBundle\Service\FileUploader;
  */
 class Category implements BaseDBModel
 {
+    use FileUploaderTrait;
+    
     const LOCAL_PATH = 'images/page/category/';
     
 	/**
@@ -65,6 +70,16 @@ class Category implements BaseDBModel
     
     protected $oldpreview;
 
+    /**
+    * @ORM\OneToMany(targetEntity="Page", mappedBy="category")
+    */
+    protected $pages;
+    
+    public function __construct()
+    {
+        $this->pages = new ArrayCollection();
+    }
+    
     /**
      * Get id
      *
@@ -253,32 +268,6 @@ class Category implements BaseDBModel
         $this->preview = $preview;
         return $this;
     }
-
-    public function saveFiles($files, FileUploader $uploader)
-    {
-        $file = $files->get('preview');
-        if ($file) {
-            //$fileUploader = new FileUploader($path . self::LOCAL_PATH);
-            $fileName = $uploader->upload(self::LOCAL_PATH, $file);
-            $this->setPreview($fileName);
-        }
-        
-        if (($this->oldpreview != $this->preview) && $this->oldpreview) {
-            $uploader->delete(self::LOCAL_PATH, $this->oldpreview);
-        //    unlink($path . self::LOCAL_PATH.$this->oldpreview);
-        } 
-        
-        return $this;
-    }
-    
-    public function deleteFiles(FileUploader $uploader)
-    {
-        if ($this->oldpreview) {
-            $uploader->delete(self::LOCAL_PATH, $this->oldpreview);
-        } 
-        
-        return $this;        
-    }
     
     /**
      * Get preview
@@ -307,13 +296,4 @@ class Category implements BaseDBModel
     {
         return true;
     }
-	
-	public function getFilesFileds()
-	{
-		return [
-            'preview' => [
-                'path' => 'images/page/category/'
-            ]
-        ];
-	}
 }

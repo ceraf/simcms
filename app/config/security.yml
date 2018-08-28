@@ -24,7 +24,7 @@ security:
 
 
     access_control:
-        - { path: ^/admins, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
     encoders:
         Sacprd\UserBundle\Entity\User:

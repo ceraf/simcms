@@ -8,8 +8,8 @@ class CategoryGrid extends Grid
 {
     protected function init()
     {
-        $this->action_route = 'sacprd_page_action';
-        $this->grid_route = 'sacprd_page_list';
+        $this->action_route = 'sacprd_category_page_action';
+        $this->grid_route = 'sacprd_category_page_list';
         $this->title = 'Категории страниц';
         
         parent::init();
