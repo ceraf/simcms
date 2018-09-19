@@ -1,0 +1,19 @@
+{% extends '@SacprdAdmin/' ~ admin_layout ~ '/layout.html.twig' %}
+{% block h1 %}{{ title }}{% endblock %}
+{% block content %}
+            {% form_theme form '@SacprdAdmin/' ~ admin_layout ~ '/form/single_form.html.twig' %}
+            <form action="" method="POST" enctype="multipart/form-data" >
+            {{ form_errors(form) }}
+                <div class="row">
+                   
+{{ form_widget(form) }}
+                   
+                </div>
+                <p>
+                    <button type="button" onClick="document.location='{{ path(home_route) }}'" class="btn btn-default">Отмена</button>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </p>
+
+            </form>
+{% endblock %}
+

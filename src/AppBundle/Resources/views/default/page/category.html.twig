@@ -1,0 +1,51 @@
+{% extends '@App/' ~ front_layout ~ '/layout.html.twig' %}
+{% block h1 %}{{ item.title }}{% endblock %}
+{% block meta_title %}{{ item.metatitle }}{% endblock %}
+{% block meta_description %}{{ item.metadescription }}{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="span9">
+			<!--Blog Post-->
+            {% for page in item.pages %}
+                <div class="blog-post"> 
+                    <h2>{{ page.title }}</h2>
+                        <img src="/{{ page.previewpath }}">
+                        <p>{{ page.shortdescr }}</p>	
+
+                        <a class="btn btn-primary" href="{{ page.url }}">Read More</a>			
+                </div>
+            {% endfor %}
+
+
+			<!--Pagination-->
+			<div class="pagination">
+				<ul>
+					<li>
+						<a href="#">Prev</a>
+					</li>
+					<li>
+						<a href="#">1</a>
+					</li>
+					<li>
+						<a href="#">2</a>
+					</li>
+					<li>
+						<a href="#">3</a>
+					</li>
+					<li>
+						<a href="#">4</a>
+					</li>
+					<li>
+						<a href="#">5</a>
+					</li>
+					<li>
+						<a href="#">Next</a>
+					</li>
+				</ul>
+			</div>	
+
+		<!--/.Pagination-->
+		</div>	
+    </div>
+{% endblock %}

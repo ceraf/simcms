@@ -2,7 +2,7 @@
 
 namespace Sacprd\PageBundle\Model;
 
-use Sacprd\Core\Admin\Grid\Grid;
+use Sacprd\AdminBundle\Model\Admin\Grid\Grid;
 
 class PageGrid extends Grid
 {

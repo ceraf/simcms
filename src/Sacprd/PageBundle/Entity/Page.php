@@ -3,10 +3,10 @@
 namespace Sacprd\PageBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sacprd\Core\BaseDBModel;
+use Sacprd\AdminBundle\Model\BaseDBModel;
 
-use Sacprd\Core\FileUploaderTrait;
-use AppBundle\Service\FileUploader;
+use Sacprd\AdminBundle\Model\FileUploaderTrait;
+
 
 /**
  * @ORM\Entity
@@ -79,7 +79,10 @@ class Page implements BaseDBModel
     
     public function getSeoUrlKey()
     {
-        return 'page/' . $this->getId();
+        return [
+            'route' => self::class,
+            'params' => ['id' => $this->getId()]
+        ];
     }
     
     public function isHasSeoUrl()
@@ -241,6 +244,11 @@ class Page implements BaseDBModel
         return $this->preview;
     }
 
+    public function getPreviewPath()
+    {
+        return self::LOCAL_PATH.'/'.$this->preview;
+    }
+    
     /**
      * Set shortdescr
      *

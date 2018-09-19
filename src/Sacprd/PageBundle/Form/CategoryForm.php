@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Sacprd\Core\PreviewType;
+use Sacprd\AdminBundle\Model\PreviewType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -78,7 +78,7 @@ class CategoryForm extends AbstractType
         
         $builder->add(
             'url',
-            TextareaType::class,
+            TextType::class,
             [
                 'label' => 'Ссылка',
                 'required' => false,/*

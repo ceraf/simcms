@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="seo")
+ * @ORM\Table(name="rewrite")
  */
 class Rewrite
 {
@@ -31,26 +31,11 @@ class Rewrite
 	* @ORM\column(type="string", length=200)
 	*/
 	protected $route;
-
-	/**
-	* @ORM\column(type="string", length=255, nullable=true)
-	*/
-	protected $meta_title;
-	
-	/**
-	* @ORM\column(type="string", length=255, nullable=true)
-	*/
-	protected $meta_h1;
     
-    /**
-	* @ORM\column(type="string", length=500, nullable=true)
+	/**
+	* @ORM\column(type="string", length=400)
 	*/
-	protected $meta_description;
-    
-    /**
-	* @ORM\column(type="string", length=500, nullable=true)
-	*/
-	protected $meta_keyboard;  
+	protected $params;
 
     /**
      * Get id
@@ -135,98 +120,26 @@ class Rewrite
     }
 
     /**
-     * Set metaTitle
+     * Set params
      *
-     * @param string $metaTitle
+     * @param string $params
      *
      * @return Rewrite
      */
-    public function setMetaTitle($metaTitle)
+    public function setParams($params)
     {
-        $this->meta_title = $metaTitle;
+        $this->params = $params;
 
         return $this;
     }
 
     /**
-     * Get metaTitle
+     * Get params
      *
      * @return string
      */
-    public function getMetaTitle()
+    public function getParams()
     {
-        return $this->meta_title;
-    }
-
-    /**
-     * Set metaH1
-     *
-     * @param string $metaH1
-     *
-     * @return Rewrite
-     */
-    public function setMetaH1($metaH1)
-    {
-        $this->meta_h1 = $metaH1;
-
-        return $this;
-    }
-
-    /**
-     * Get metaH1
-     *
-     * @return string
-     */
-    public function getMetaH1()
-    {
-        return $this->meta_h1;
-    }
-
-    /**
-     * Set metaDescription
-     *
-     * @param string $metaDescription
-     *
-     * @return Rewrite
-     */
-    public function setMetaDescription($metaDescription)
-    {
-        $this->meta_description = $metaDescription;
-
-        return $this;
-    }
-
-    /**
-     * Get metaDescription
-     *
-     * @return string
-     */
-    public function getMetaDescription()
-    {
-        return $this->meta_description;
-    }
-
-    /**
-     * Set metaKeyboard
-     *
-     * @param string $metaKeyboard
-     *
-     * @return Rewrite
-     */
-    public function setMetaKeyboard($metaKeyboard)
-    {
-        $this->meta_keyboard = $metaKeyboard;
-
-        return $this;
-    }
-
-    /**
-     * Get metaKeyboard
-     *
-     * @return string
-     */
-    public function getMetaKeyboard()
-    {
-        return $this->meta_keyboard;
+        return $this->params;
     }
 }

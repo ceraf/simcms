@@ -3,7 +3,7 @@
 namespace Sacprd\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sacprd\Core\BaseDBModel;
+use Sacprd\AdminBundle\Model\BaseDBModel;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

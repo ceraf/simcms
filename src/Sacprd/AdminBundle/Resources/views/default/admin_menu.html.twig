@@ -1,0 +1,32 @@
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Контент<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{{ path('sacprd_page_list') }}">Страницы</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('sacprd_category_page_list') }}">Категории страниц</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Безопасность<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{{ path('sacprd_user_list') }}">Пользователи</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('sacprd_group_list') }}">Группы</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->

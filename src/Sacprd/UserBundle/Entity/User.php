@@ -3,7 +3,7 @@
 namespace Sacprd\UserBundle\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use Sacprd\Core\BaseDBModel;
+use Sacprd\AdminBundle\Model\BaseDBModel;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

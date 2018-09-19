@@ -3,6 +3,7 @@
 parameters:
     #parameter_name: value
     web_path: '%kernel.project_dir%/web/'
+    
 
 services:
     # default configuration for services in *this* file
@@ -36,7 +37,7 @@ services:
     #         $someArgument: 'some_value'
 
     file_uploader:
-        class: AppBundle\Service\FileUploader
+        class: Sacprd\AdminBundle\Service\FileUploader
         public: true
         arguments:
             $targetDirectory: '%web_path%'

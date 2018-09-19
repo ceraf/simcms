@@ -6,7 +6,7 @@ use Sacprd\PageBundle\Entity\Page as Entity;
 use Sacprd\PageBundle\Form\PageForm as Form;
 use Sacprd\PageBundle\Model\PageGrid as Grid;
 
-use Sacprd\Core\Admin\Controller\AdminController;
+use Sacprd\AdminBundle\Model\Admin\Controller\AdminController;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;

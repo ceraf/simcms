@@ -3,10 +3,10 @@
 namespace Sacprd\PageBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sacprd\Core\BaseDBModel;
+use Sacprd\AdminBundle\Model\BaseDBModel;
 
-use Sacprd\Core\FileUploaderTrait;
-use AppBundle\Service\FileUploader;
+use Sacprd\AdminBundle\Model\FileUploaderTrait;
+use Doctrine\Common\Collections\ArrayCollection; 
 
 
 
@@ -289,11 +289,48 @@ class Category implements BaseDBModel
     
     public function getSeoUrlKey()
     {
-        return 'pages/category/' . $this->getId();
+        return [
+            'route' => self::class,
+            'params' => ['id' => $this->getId()]
+        ];
     }
     
     public function isHasSeoUrl()
     {
         return true;
+    }
+
+    /**
+     * Add page
+     *
+     * @param \Sacprd\PageBundle\Entity\Page $page
+     *
+     * @return Category
+     */
+    public function addPage(\Sacprd\PageBundle\Entity\Page $page)
+    {
+        $this->pages[] = $page;
+
+        return $this;
+    }
+
+    /**
+     * Remove page
+     *
+     * @param \Sacprd\PageBundle\Entity\Page $page
+     */
+    public function removePage(\Sacprd\PageBundle\Entity\Page $page)
+    {
+        $this->pages->removeElement($page);
+    }
+
+    /**
+     * Get pages
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPages()
+    {
+        return $this->pages;
     }
 }

@@ -16,8 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Sacprd\Core\PreviewType;
-use Sacprd\Core\UserpasswordType;
+use Sacprd\AdminBundle\Model\PreviewType;
+use Sacprd\AdminBundle\Model\UserpasswordType;
 
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 

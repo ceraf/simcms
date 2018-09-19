@@ -2,7 +2,7 @@
 
 namespace Sacprd\UserBundle\Model;
 
-use Sacprd\Core\Admin\Grid\Grid;
+use Sacprd\AdminBundle\Model\Admin\Grid\Grid;
 
 class UserGrid extends Grid
 {

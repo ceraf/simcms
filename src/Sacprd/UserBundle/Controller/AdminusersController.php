@@ -6,7 +6,7 @@ use Sacprd\UserBundle\Form\UserForm as Form;
 use Sacprd\UserBundle\Model\UserGrid as Grid;
 use Sacprd\UserBundle\Entity\User as Entity;
 
-use Sacprd\Core\Admin\Controller\AdminController;
+use Sacprd\AdminBundle\Model\Admin\Controller\AdminController;
 use Symfony\Component\HttpFoundation\Request;
 
 class AdminusersController extends AdminController

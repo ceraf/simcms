@@ -6,7 +6,7 @@ use Sacprd\UserBundle\Form\GroupForm as Form;
 use Sacprd\UserBundle\Model\GroupGrid as Grid;
 use Sacprd\UserBundle\Entity\Group as Entity;
 
-use Sacprd\Core\Admin\Controller\AdminController;
+use Sacprd\AdminBundle\Model\Admin\Controller\AdminController;
 use Symfony\Component\HttpFoundation\Request;
 
 class AdmingroupsController extends AdminController
